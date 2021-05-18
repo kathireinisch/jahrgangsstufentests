@@ -75,7 +75,7 @@ public class Main {
 
     //Aufgabe 3
     //3e)
-    public void calculateAlignment(Gene gene, Gene otherGene){
+    public static void calculateAlignment(Gene gene, Gene otherGene){
         //get Sequence of both Gene objects
         String sequence = gene.getSeq();
         String otherSequence = otherGene.getSeq();
@@ -104,7 +104,7 @@ public class Main {
     }
 
     //3f)
-    public void printGeneNames(ArrayList<Gene> genes){
+    public static void printGeneNames(ArrayList<Gene> genes){
 
         //iterate through every Gene object in ArrayList ("genes")
         for(Gene gene : genes){

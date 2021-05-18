@@ -97,7 +97,7 @@ public class Gene {
             }
 
             //2. Option: switch-case
-            switch (base){
+            /*switch (base){
                 case 'G':
                     complementString += 'C';
                     break;
@@ -110,7 +110,7 @@ public class Gene {
                 case 'T':
                     complementString += 'A';
                     break;
-            }
+            }*/
 
         }
 
