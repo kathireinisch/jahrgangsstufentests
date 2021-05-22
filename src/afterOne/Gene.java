@@ -1,3 +1,4 @@
+package afterOne;
 
 public class Gene {
     private String name;

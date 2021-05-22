@@ -1,3 +1,5 @@
+package afterTwo;
+
 public class Gene {
     private String id;
     private String chromosome;

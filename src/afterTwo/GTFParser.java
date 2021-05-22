@@ -1,6 +1,9 @@
+package afterTwo;
+
 import java.io.*;
+import java.text.ParseException;
 import java.util.HashMap;
-import org.apache.commons.cli.*;
+//import org.apache.commons.cli.*;
 
 public class GTFParser {
     private HashMap<String, Gene> geneMap = new HashMap<>();
@@ -96,7 +99,7 @@ public class GTFParser {
      * @param args CLI Arguments
      */
     public static void main(String[] args) {
-        // Erstellen der Command Line Arguments
+       /* // Erstellen der Command Line Arguments
         Options options = new Options();
         // GTF ist eine notwendige Flag und hat ein Argument (den Pfad)
         options.addOption(Option.builder("gtf").hasArg().required().desc("gtf file").build());
@@ -114,6 +117,6 @@ public class GTFParser {
         } catch (ParseException e){
             System.err.println("Error when parsing the command line inputs");
             e.printStackTrace();
-        }
+        }*/
     }
 }
