@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
+
 public class Main {
 
     public static void main(String[] args){
@@ -22,7 +23,7 @@ public class Main {
         ArgumentParser parser = ArgumentParsers.newFor("GeneRunner").build()
                 .defaultHelp(true)
                 .description("Get interesting information from genes");
-        parser.addArgument("-f", "--filepath")
+        parser.addArgument("-f")
                 .help("File to parse genes from.");
         Namespace ns = null;
         try {
@@ -31,16 +32,10 @@ public class Main {
             parser.handleError(e);
             System.exit(1);
         }
-        String filepath = ns.getString("filepath");
+        String filepath = ns.getString("f");
 
-        
-        HashMap<String, Gene> genes = new HashMap<>();
-        try {
-            //fasta file einlesen in hashmap
-            genes = parseGenes(filepath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        HashMap<String,Gene> genes = Gene.parseGenes(filepath);
+
 
         //Aufgabe 4:
 
@@ -110,7 +105,7 @@ public class Main {
                     gene_entered = scanner.next(); //User gibt Gen Id ein
                     if (checkIfGeneInMap(gene_entered, genes)){
                         Gene gene = genes.get(gene_entered);
-                        System.out.println(gene.calculateReverseComplement());
+                        System.out.println(gene.calculateReverseComplement(gene.getSeq()));
                     } else {
                         System.out.println("Für diese Gen haben wir leider keinen Eintrag! Versuchen Sie es erneut!");
                     }
@@ -124,7 +119,7 @@ public class Main {
                         String second = scanner.next();
                         if (checkIfGeneInMap(second, genes)){
                             Gene second_gene = genes.get(second);
-                            calculateAlignment(first_gene, second_gene);
+                            compareSequences(first_gene, second_gene);
                         } else {
                             System.out.println("Für diese Gen haben wir leider keinen Eintrag! Versuchen Sie es erneut!");
                         }
@@ -148,42 +143,16 @@ public class Main {
     }
 
 
-
-    public static HashMap<String, Gene> parseGenes(String filepath) throws IOException {
-        HashMap<String, Gene> geneList = new HashMap<>();
-        BufferedReader reader = new BufferedReader(new FileReader(filepath));
-        String line;
-        String id ="";
-        char[] allowedChars = {'A', 'T', 'C', 'G'};
-        while (((line=reader.readLine()))!=null){
-            if(line.startsWith(">")){
-                //wichtige annotationen einlesen, gen objekt damit erstellen
-                String[] attributes = line.split("\t");
-                id = attributes[0].replace(">", "");
-                String name = attributes[1];
-                geneList.put(id, new Gene(id, "", name));
-            } else {
-                String test ="helloAT";
-                //alles was nach der Gene id zeile kommt, gehoert zur sequenz des jeweiligen gens
-                //falls die sequenz ein zeichen != A/T/C/G enthält, wird das gen rausgelassen
-                if (!line.matches("[A|T|C|G]*")){
-                    if (geneList.get(id)!= null){
-                        geneList.remove(id);
-                    }
-                    continue;
-                }
-                String seq = geneList.get(id).getSeq();
-                seq=seq+line;
-                geneList.get(id).setSeq(seq);
-            }
-
-        }
-        return geneList;
-    }
-
     //Aufgabe 3
     //3e)
-    public static void calculateAlignment(Gene gene, Gene otherGene){
+    public static void compareSequences(Gene gene, Gene otherGene){
+
+
+        // check if sequences are the same length
+        if (gene.getLength() != otherGene.getLength()){
+            System.out.println("Sequences have unequal length!"); //could also throw an Exception
+        }
+
         //get Sequence of both Gene objects
         String sequence = gene.getSeq();
         String otherSequence = otherGene.getSeq();
@@ -207,7 +176,7 @@ public class Main {
         }
 
         //print Alignment and Score
-        System.out.println("Alignment: "+alignment);
+        System.out.println("Matching-Sequenz: "+ alignment);
         System.out.println("Score: "+ score);
     }
 
