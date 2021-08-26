@@ -1,5 +1,10 @@
 package afterOne;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+
 public class Gene {
     private String name;
     private String id;
@@ -35,7 +40,32 @@ public class Gene {
         return id;
     }
 
+    public static HashMap<String, Gene> parseGenes(String filepath) {
+        HashMap<String, Gene> geneList = new HashMap<>();
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader(filepath));
+            String line;
+            String id ="";
+            while (((line=reader.readLine()))!=null){
+                if(line.startsWith(">")){
+                    //wichtige annotationen einlesen, gen objekt damit erstellen
+                    String[] attributes = line.split("\t");
+                    id = attributes[0].replace(">", "");
+                    String name = attributes[1];
+                    geneList.put(id, new Gene(id, "", name));
+                } else {
+                    //alles was nach der Gene id zeile kommt, gehoert zur sequenz des jeweiligen gens
+                    String seq = geneList.get(id).getSeq();
+                    seq=seq+line; // alternativ StringBuilder benutzen (effizienter)
+                    geneList.get(id).setSeq(seq);
+                }
 
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return geneList;
+    }
 
 
     //Aufgabe 3
@@ -73,56 +103,55 @@ public class Gene {
     }
 
     //3c)
-    public String calculateComplement(){
+    public static String calculateComplement(String sequence){
         //initialize new String, where the complement will be build
-        String complementString = "";
-
+        StringBuilder builder = new StringBuilder();
 
         //iterare through every char in String
-        for (int i = 0; i < seq.length(); i++) {
-            char base = seq.charAt(i);
+        for (int i = 0; i < sequence.length(); i++) {
+            char base = sequence.charAt(i);
 
             //1. Option: if-statements
             //check base and append complement of this base to new String (complementString)
             if(base == 'C'){
-                complementString += 'G';
+                builder.append('G');
             }
             if(base == 'G'){
-                complementString += 'C';
+                builder.append('C');
             }
             if(base == 'A'){
-                complementString += 'T';
+                builder.append('T');
             }
             if(base == 'T'){
-                complementString += 'A';
+                builder.append('A');
             }
 
             //2. Option: switch-case
             /*switch (base){
                 case 'G':
-                    complementString += 'C';
+                    builder.append('C');
                     break;
                 case 'C':
-                    complementString += 'G';
+                    builder.append('G');;
                     break;
                 case 'A':
-                    complementString += 'T';
+                    builder.append('T');;
                     break;
                 case 'T':
-                    complementString += 'A';
+                    builder.append('A');;
                     break;
             }*/
 
         }
 
-        return complementString;
+        return builder.toString();
     }
 
 
     //3d)
-    public String calculateReverseComplement(){
+    public static String calculateReverseComplement(String sequence){
         //calculate Complement by calling calculateComplement()
-        String complement = calculateComplement();
+        String complement = calculateComplement(sequence);
 
         //reverse this String
         String reverse = new StringBuffer(complement).reverse().toString();
